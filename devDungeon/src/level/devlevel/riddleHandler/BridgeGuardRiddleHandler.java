@@ -159,7 +159,12 @@ public class BridgeGuardRiddleHandler implements ITickable, IHealthObserver {
     Quiz lastRiddle = new SingleChoice("What is my favorite number?");
     lastRiddle.taskName("Riddle: Bridge Guard");
 
-    for (int i = 0; i < 6; i++) {
+      // Richtige Antwort erzeugen und hinzufügen
+      String correct = "" + (int) (Math.random() * Integer.MAX_VALUE);
+      lastRiddle.addAnswer(new Quiz.Content(correct));
+      System.out.println("Richtige Antwort: " + correct);
+
+    for (int i = 1; i < 6; i++) {
       lastRiddle.addAnswer(new Quiz.Content("" + (int) (Math.random() * Integer.MAX_VALUE)));
     }
     lastRiddle.addCorrectAnswerIndex(0);
@@ -228,10 +233,19 @@ public class BridgeGuardRiddleHandler implements ITickable, IHealthObserver {
 
   private void setupRiddles() {
     List<DevRiddle> riddles = RegexRiddle.getRandRiddles(5);
-    for (DevRiddle riddle : riddles) {
-      this.addRiddle(
-          riddle.question(), riddle.answers().toArray(new String[0]), riddle.correctAnswerIndex());
-    }
+      for (DevRiddle riddle : riddles) {
+          String question = riddle.question();
+          List<String> answers = riddle.answers();
+          int correct = riddle.correctAnswerIndex();
+
+          System.out.println("Frage: " + question);
+          for (int i = 0; i < answers.size(); i++) {
+              String mark = (i == correct) ? "✔" : " ";
+              System.out.println(" " + mark + " " + answers.get(i));
+          }
+
+          this.addRiddle(question, answers.toArray(new String[0]), correct);
+      }
   }
 
   // Spawn Methods
